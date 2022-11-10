@@ -18,16 +18,37 @@ function onSubmit(e) {
             email: emailInput.value
         }
         let user = JSON.stringify(userDetails);
-        localStorage.setItem('user_' + emailInput.value, user);
+        localStorage.setItem(emailInput.value, user);
 
-        let li = document.createElement('li');
-        li.className = 'item';
-        let obj = JSON.parse(localStorage.getItem('user_' + emailInput.value));
-        let text = document.createTextNode(obj.name + ' : ' + obj.email);
-        li.appendChild(text);
-        list.appendChild(li);
+        if (localStorage.getItem(emailInput.value) !== null) {
+            let removeItem = document.getElementById(emailInput.value);
+            if (removeItem) {
+                list.removeChild(removeItem);
+            }
+        }
+
+        let obj = JSON.parse(localStorage.getItem(emailInput.value));
+        let childHTML = `<li id=${emailInput.value} class=item>
+                            ${obj.name} : ${obj.email} 
+                            <button onClick=deleteUser('${emailInput.value}') style='float:right'>Delete</button>
+                            <button onClick=editUser('${emailInput.value}') style='float:right'>Edit</button>
+                        </li>`;
+        list.innerHTML += childHTML;
 
         nameInput.value = '';
         emailInput.value = '';
     }
+}
+
+function deleteUser(user) {
+    localStorage.removeItem(user);
+    let removeItem = document.getElementById(user);
+    list.removeChild(removeItem);
+}
+
+function editUser(user) {
+    let obj = JSON.parse(localStorage.getItem(user));
+    nameInput.value = obj.name;
+    emailInput.value = obj.email;
+    deleteUser(user);
 }
