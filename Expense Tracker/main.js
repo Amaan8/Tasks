@@ -23,10 +23,10 @@ function onSubmit(e) {
     let expense = JSON.stringify(details);
     localStorage.setItem(expense, expense);
 
-    if (localStorage.getItem(amountInput.value) !== null) {
-        let removeItem = document.getElementById(amountInput.value);
+    if (localStorage.getItem(expense) !== null) {
+        let removeItem = document.getElementById(expense);
         if (removeItem) {
-            list.removeChild(removeItem);
+            items.removeChild(removeItem);
         }
     }
 
