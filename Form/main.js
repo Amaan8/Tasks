@@ -5,6 +5,13 @@ let msg = document.getElementById('msg');
 let list = document.getElementById('users');
 myForm.addEventListener('submit', onSubmit);
 
+// document.addEventListener('DOMContentLoaded', (event) => {
+//     Object.keys(localStorage).forEach((key) => {
+//         let obj = JSON.parse(localStorage.getItem(key));
+//         addItem(key, obj);
+//     })
+// })
+
 function onSubmit(e) {
     e.preventDefault();
     if (nameInput.value === '' || emailInput.value === '') {
@@ -17,38 +24,49 @@ function onSubmit(e) {
             name: nameInput.value,
             email: emailInput.value
         }
-        let user = JSON.stringify(userDetails);
-        localStorage.setItem(emailInput.value, user);
+        // let user = JSON.stringify(userDetails);
+        // localStorage.setItem(user, user);
 
-        if (localStorage.getItem(emailInput.value) !== null) {
-            let removeItem = document.getElementById(emailInput.value);
-            if (removeItem) {
-                list.removeChild(removeItem);
-            }
-        }
+        axios.post("https://crudcrud.com/api/4813370fb394426ebe50e70fa6f9e466/appointmentData", userDetails)
+            .then((response) => {
+                console.log(response.data);
+                addItem(response.data);
+            })
+            .catch(err => console.log(err));
 
-        let obj = JSON.parse(localStorage.getItem(emailInput.value));
-        let childHTML = `<li id=${emailInput.value} class=item>
-                            ${obj.name} : ${obj.email} 
-                            <button onClick=deleteUser('${emailInput.value}') style='float:right'>Delete</button>
-                            <button onClick=editUser('${emailInput.value}') style='float:right'>Edit</button>
-                        </li>`;
-        list.innerHTML += childHTML;
+        // if (localStorage.getItem(user) !== null) {
+        //     let removeItem = document.getElementById(user);
+        //     if (removeItem) {
+        //         list.removeChild(removeItem);
+        //     }
+        // }
+
+        // let obj = JSON.parse(localStorage.getItem(user));
+        // addItem(user, obj);
 
         nameInput.value = '';
         emailInput.value = '';
     }
 }
 
+function addItem(user) {
+    let childHTML = `<li id=${user.email} class=item>
+                            ${user.name} : ${user.email} 
+                            <button onClick=deleteUser('${user.email}') style='float:right'>Delete</button>
+                            <button onClick=editUser('${user}') style='float:right'>Edit</button>
+                        </li>`;
+    list.innerHTML += childHTML;
+}
+
 function deleteUser(user) {
-    localStorage.removeItem(user);
+    // localStorage.removeItem(user);
     let removeItem = document.getElementById(user);
     list.removeChild(removeItem);
 }
 
 function editUser(user) {
-    let obj = JSON.parse(localStorage.getItem(user));
-    nameInput.value = obj.name;
-    emailInput.value = obj.email;
+    // let obj = JSON.parse(localStorage.getItem(user));
+    nameInput.value = user.name;
+    emailInput.value = user.email;
     deleteUser(user);
 }
