@@ -40,17 +40,21 @@ function onSubmit(e) {
 }
 
 function addItem(user) {
-    let childHTML = `<li id=${user.email} class=item>
+    let childHTML = `<li id=${user._id} class=item>
                             ${user.name} : ${user.email} 
-                            <button onClick=deleteUser('${user.email}') style='float:right'>Delete</button>
+                            <button onClick=deleteUser('${user._id}') style='float:right'>Delete</button>
                             <button onClick=editUser('${user}') style='float:right'>Edit</button>
                         </li>`;
     list.innerHTML += childHTML;
 }
 
-function deleteUser(user) {
-    let removeItem = document.getElementById(user);
-    list.removeChild(removeItem);
+function deleteUser(id) {
+    axios.delete(`https://crudcrud.com/api/4813370fb394426ebe50e70fa6f9e466/appointmentData/${id}`)
+        .then(() => {
+            let removeItem = document.getElementById(id);
+            list.removeChild(removeItem);
+        })
+        .catch(err => console.log(err));
 }
 
 function editUser(user) {
