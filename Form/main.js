@@ -43,7 +43,7 @@ function addItem(user) {
     let childHTML = `<li id=${user._id} class=item>
                             ${user.name} : ${user.email} 
                             <button onClick=deleteUser('${user._id}') style='float:right'>Delete</button>
-                            <button onClick=editUser('${user}') style='float:right'>Edit</button>
+                            <button onClick=editUser('${user._id}','${user.name}','${user.email}') style='float:right'>Edit</button>
                         </li>`;
     list.innerHTML += childHTML;
 }
@@ -57,8 +57,8 @@ function deleteUser(id) {
         .catch(err => console.log(err));
 }
 
-function editUser(user) {
-    nameInput.value = user.name;
-    emailInput.value = user.email;
-    deleteUser(user);
+function editUser(id, name, email) {
+    nameInput.value = name;
+    emailInput.value = email;
+    deleteUser(id);
 }
