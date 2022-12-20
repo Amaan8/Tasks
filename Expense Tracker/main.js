@@ -6,10 +6,13 @@ let items = document.getElementById('items');
 myForm.addEventListener('submit', onSubmit);
 
 document.addEventListener('DOMContentLoaded', (event) => {
-    Object.keys(localStorage).forEach((key) => {
-        let obj = JSON.parse(localStorage.getItem(key));
-        addItem(key, obj);
-    })
+    axios.get("https://crudcrud.com/api/1dfcfa11851a43bba799dafc4adf11bc/expenseData")
+        .then((response) => {
+            for (let i = 0; i < response.data.length; i++) {
+                addItem(response.data[i]);
+            }
+        })
+        .catch(err => console.log(err));
 })
 
 function onSubmit(e) {
@@ -20,42 +23,38 @@ function onSubmit(e) {
         description: descriptionInput.value,
         category: categoryInput.value
     }
-    let expense = JSON.stringify(details);
-    localStorage.setItem(expense, expense);
 
-    if (localStorage.getItem(expense) !== null) {
-        let removeItem = document.getElementById(expense);
-        if (removeItem) {
-            items.removeChild(removeItem);
-        }
-    }
-
-    let obj = JSON.parse(localStorage.getItem(expense));
-    addItem(expense, obj);
+    axios.post("https://crudcrud.com/api/1dfcfa11851a43bba799dafc4adf11bc/expenseData", details)
+        .then((response) => {
+            addItem(response.data);
+        })
+        .catch(err => console.log(err));
 
     amountInput.value = '';
     descriptionInput.value = '';
 }
 
-function addItem(expense, obj) {
-    let childHTML = `<li id=${expense} class=item>
-                        ${obj.amount} : ${obj.description} : ${obj.category}
-                        <button onClick=deleteExpense('${expense}')>Delete</button>
-                        <button onClick=editExpense('${expense}')>Edit</button>
+function addItem(expense) {
+    let childHTML = `<li id=${expense._id} class=list-group-item>
+                        ${expense.amount} : ${expense.description} : ${expense.category}
+                        <button onClick=deleteExpense('${expense._id}') class='btn btn-danger'>Delete</button>
+                        <button onClick=editExpense('${expense._id}','${expense.amount}','${expense.description}','${expense.category}') class='btn btn-warning'>Edit</button>
                     </li>`;
     items.innerHTML += childHTML;
 }
 
-function deleteExpense(expense) {
-    localStorage.removeItem(expense);
-    let removeItem = document.getElementById(expense);
-    items.removeChild(removeItem);
+function deleteExpense(id) {
+    axios.delete(`https://crudcrud.com/api/1dfcfa11851a43bba799dafc4adf11bc/expenseData/${id}`)
+        .then(() => {
+            let removeItem = document.getElementById(id);
+            items.removeChild(removeItem);
+        })
+        .catch(err => console.log(err));
 }
 
-function editExpense(expense) {
-    let obj = JSON.parse(localStorage.getItem(expense));
-    amountInput.value = obj.amount;
-    descriptionInput.value = obj.description;
-    categoryInput.value = obj.category;
-    deleteExpense(expense);
+function editExpense(id, amount, description, category) {
+    amountInput.value = amount;
+    descriptionInput.value = description;
+    categoryInput.value = category;
+    deleteExpense(id);
 }
