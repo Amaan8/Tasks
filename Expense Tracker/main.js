@@ -6,13 +6,17 @@ let items = document.getElementById('items');
 myForm.addEventListener('submit', onSubmit);
 
 document.addEventListener('DOMContentLoaded', (event) => {
-    axios.get("https://crudcrud.com/api/1dfcfa11851a43bba799dafc4adf11bc/expenseData")
-        .then((response) => {
+    const getData = async () => {
+        try {
+            const response = await axios.get("https://crudcrud.com/api/6bae5b2b1f3d42b9b4d4496e35d7a030/expenseData");
             for (let i = 0; i < response.data.length; i++) {
                 addItem(response.data[i]);
             }
-        })
-        .catch(err => console.log(err));
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    getData();
 })
 
 function onSubmit(e) {
@@ -24,11 +28,15 @@ function onSubmit(e) {
         category: categoryInput.value
     }
 
-    axios.post("https://crudcrud.com/api/1dfcfa11851a43bba799dafc4adf11bc/expenseData", details)
-        .then((response) => {
+    const post = async () => {
+        try {
+            const response = await axios.post("https://crudcrud.com/api/6bae5b2b1f3d42b9b4d4496e35d7a030/expenseData", details);
             addItem(response.data);
-        })
-        .catch(err => console.log(err));
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    post();
 
     amountInput.value = '';
     descriptionInput.value = '';
@@ -44,12 +52,16 @@ function addItem(expense) {
 }
 
 function deleteExpense(id) {
-    axios.delete(`https://crudcrud.com/api/1dfcfa11851a43bba799dafc4adf11bc/expenseData/${id}`)
-        .then(() => {
+    const deleteData = async () => {
+        try {
+            const response = await axios.delete(`https://crudcrud.com/api/6bae5b2b1f3d42b9b4d4496e35d7a030/expenseData/${id}`);
             let removeItem = document.getElementById(id);
             items.removeChild(removeItem);
-        })
-        .catch(err => console.log(err));
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    deleteData();
 }
 
 function editExpense(id, amount, description, category) {
