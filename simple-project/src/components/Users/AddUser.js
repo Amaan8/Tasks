@@ -8,14 +8,15 @@ import classes from './AddUser.module.css';
 const AddUser = (props) => {
   const [enteredUsername, setEnteredUsername] = useState('');
   const [enteredAge, setEnteredAge] = useState('');
+  const [enteredCollegename, setEnteredCollegename] = useState('');
   const [error, setError] = useState();
 
   const addUserHandler = (event) => {
     event.preventDefault();
-    if (enteredUsername.trim().length === 0 || enteredAge.trim().length === 0) {
+    if (enteredUsername.trim().length === 0 || enteredAge.trim().length === 0 || enteredCollegename.trim().length === 0) {
       setError({
         title: 'Invalid input',
-        message: 'Please enter a valid name and age (non-empty values).',
+        message: 'Please enter a valid name, age and college name (non-empty values).',
       });
       return;
     }
@@ -26,9 +27,10 @@ const AddUser = (props) => {
       });
       return;
     }
-    props.onAddUser(enteredUsername, enteredAge);
+    props.onAddUser(enteredUsername, enteredAge, enteredCollegename);
     setEnteredUsername('');
     setEnteredAge('');
+    setEnteredCollegename('');
   };
 
   const usernameChangeHandler = (event) => {
@@ -37,6 +39,10 @@ const AddUser = (props) => {
 
   const ageChangeHandler = (event) => {
     setEnteredAge(event.target.value);
+  };
+
+  const collegenameChangeHandler = (event) => {
+    setEnteredCollegename(event.target.value);
   };
 
   const errorHandler = () => {
@@ -67,6 +73,13 @@ const AddUser = (props) => {
             type="number"
             value={enteredAge}
             onChange={ageChangeHandler}
+          />
+          <label htmlFor="collegename">College Name</label>
+          <input
+            id="collegename"
+            type="text"
+            value={enteredCollegename}
+            onChange={collegenameChangeHandler}
           />
           <Button type="submit">Add User</Button>
         </form>
